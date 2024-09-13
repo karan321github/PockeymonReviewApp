@@ -11,5 +11,9 @@ namespace PockeymonReviewApp.Interfaces
 
         ICollection<Pockymon> GetPockeymonByCategory(int categoryId);
 
+        public bool CreateCategory(Category category);
+
+        bool save();
+
     }
 }

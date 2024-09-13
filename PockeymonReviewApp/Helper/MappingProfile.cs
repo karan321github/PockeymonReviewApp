@@ -10,9 +10,11 @@ namespace PockeymonReviewApp.Helper
         {
                 CreateMap<Pockymon , PockeymonDto>();
                 CreateMap<Category , CategoryDto>();
+                CreateMap<CategoryDto , Category>();
                 CreateMap<Country , CountryDto>();
                 CreateMap<CountryDto, Country>();
                 CreateMap<OwnerDto, Owner>();
+                CreateMap<Owner, OwnerDto>();
                 CreateMap<ReviewDto, Review>();
                 CreateMap<ReviewerDto, Reviewer>();
 

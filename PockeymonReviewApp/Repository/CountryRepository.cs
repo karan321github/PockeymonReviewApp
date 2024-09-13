@@ -22,6 +22,12 @@ namespace PockeymonReviewApp.Repository
             return _context.Countries.Any(e => e.Id == countryId);
         }
 
+        public bool CreateCountry(Country country)
+        {
+            _context.Add(country);
+            return save();
+        }
+
         public ICollection<Country> GetCountries()
         {
             return _context.Countries.ToList();
@@ -40,6 +46,12 @@ namespace PockeymonReviewApp.Repository
         public ICollection<Owner> GetOwnersFromCountry(int countryId)
         {
             return _context.Owner.Where(e => e.Country.Id == countryId).ToList();
+        }
+
+        public bool save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

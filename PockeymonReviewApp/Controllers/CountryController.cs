@@ -20,7 +20,7 @@ namespace PockeymonReviewApp.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        [ProducesResponseType(200 , Type = typeof(IEnumerable<Country>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Country>))]
         public IActionResult GetCounties()
         {
             var countries = _mapper.Map<List<CountryDto>>(_countryRepository.GetCountries());
@@ -34,7 +34,7 @@ namespace PockeymonReviewApp.Controllers
 
         }
         [HttpGet("{countryId}")]
-        [ProducesResponseType(200 , Type = typeof(Country))]
+        [ProducesResponseType(200, Type = typeof(Country))]
         [ProducesResponseType(400)]
         public IActionResult GetCountry(int id)
         {
@@ -47,7 +47,7 @@ namespace PockeymonReviewApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var country = _mapper.Map < CountryDto >(_countryRepository.GetCountry(id));
+            var country = _mapper.Map<CountryDto>(_countryRepository.GetCountry(id));
 
             return Ok(country);
         }
@@ -63,9 +63,41 @@ namespace PockeymonReviewApp.Controllers
             }
             var country = _mapper.Map<CountryDto>(_countryRepository.GetCountryByOwner(ownerId));
 
-            return Ok(country); 
+            return Ok(country);
         }
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+
+        public IActionResult CreateCategory([FromBody] CountryDto countryCreate)
+        {
+            if (countryCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var country = _countryRepository.GetCountries()
+                .Where(c => c.Name.Trim().ToUpper() == countryCreate.Name.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if(country != null)
+            {
+                ModelState.AddModelError("", "Country already exist");
+                StatusCode(422, ModelState);
+            }
+
+            var countryMap = _mapper.Map<Country>(countryCreate);
+
+            if (!_countryRepository.CreateCountry(countryMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                StatusCode(500, ModelState);
+            }
+
+            return Ok(countryMap);
+        }
+
     }
 
-    
+
 }

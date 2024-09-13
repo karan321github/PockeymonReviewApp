@@ -14,6 +14,13 @@ namespace PockeymonReviewApp.Repository
             _context = context;
             _mapper = mapper;
         }
+
+        public bool CreateOwner(Owner owner)
+        {
+            _context.Add(owner);
+            return save();
+        }
+
         public Owner GetOwner(int ownerId)
         {
             return _context.Owner.Where(e => e.Id == ownerId).FirstOrDefault();
@@ -42,6 +49,12 @@ namespace PockeymonReviewApp.Repository
         public bool OwnerExist(int ownerId)
         {
             return _context == null || _context.Owner.Any(e => e.Id == ownerId);
+        }
+
+        public bool save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

@@ -31,6 +31,16 @@ namespace PockeymonReviewApp.Repository
             return _context.PockeymonCategories.Where(e => e.CategoryId == categoryId).Select(e => e.Pockymon).ToList();
         }
 
-        
+        public bool CreateCategory(Category category)
+        {
+            _context.Add(category);
+            return save();
+        }
+
+        public bool save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

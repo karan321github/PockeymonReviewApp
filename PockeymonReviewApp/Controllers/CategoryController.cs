@@ -14,7 +14,7 @@ namespace PockeymonReviewApp.Controllers
         private readonly ICategoryRepository? _categoryRepository;
         private readonly IMapper _mapper;
 
-        public CategoryController(ICategoryRepository categoryRepository , IMapper mapper)
+        public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
@@ -22,14 +22,13 @@ namespace PockeymonReviewApp.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Category>))]
-
         public IActionResult GetCategories()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var categories =_mapper.Map<List<CategoryDto>>(_categoryRepository?.GetCategories());
+            var categories = _mapper.Map<List<CategoryDto>>(_categoryRepository?.GetCategories());
 
             return Ok(categories);
         }
@@ -39,7 +38,7 @@ namespace PockeymonReviewApp.Controllers
 
         public IActionResult GetCategory(int categoryId)
         {
-            
+
             if (!_categoryRepository.isCategoryExist(categoryId))
             {
                 return NotFound();
@@ -53,7 +52,7 @@ namespace PockeymonReviewApp.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<Pockymon>))]
         [ProducesResponseType(400)]
 
-        public IActionResult GetPockeymonByCategory(int categoryId)
+        public IActionResult GetPockeymonByCategoryId(int categoryId)
         {
             if (!ModelState.IsValid)
             {
@@ -62,5 +61,38 @@ namespace PockeymonReviewApp.Controllers
             var pockeymons = _mapper.Map<List<PockeymonDto>>(_categoryRepository?.GetPockeymonByCategory(categoryId));
             return Ok(pockeymons);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+
+        public IActionResult CreateCategory([FromBody] CategoryDto categoryCreate)
+        {
+            if (categoryCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var category = _categoryRepository?.GetCategories()
+                .Where(c => c.Name.Trim().ToUpper() == categoryCreate.Name.TrimEnd().ToUpper()).FirstOrDefault();
+            if (category != null)
+            {
+                ModelState.AddModelError("", "category already exist");
+                return StatusCode(422, ModelState);
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var categoryMap = _mapper.Map<Category>(categoryCreate);
+            if (!_categoryRepository.CreateCategory(categoryMap))
+            {
+                ModelState.AddModelError("", "Something went wrong");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("successfully created");
+        }
+
     }
 }
