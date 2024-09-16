@@ -12,14 +12,15 @@ namespace PockeymonReviewApp.Controllers
     [ApiController]
     public class OwnerController : Controller
     {
-        public IOwnerRepository _OwnerRepository;
-        public ICountryRepository _countryRepository;
-        public IMapper _mapper;
+        private readonly IOwnerRepository _OwnerRepository;
+        private readonly ICountryRepository _countryRepository;
+        private readonly IMapper _mapper;
         public OwnerController(IOwnerRepository OwnerRepository, 
             ICountryRepository countryRepository , IMapper mapper)
         {
             _OwnerRepository = OwnerRepository;
             _mapper = mapper;
+            _countryRepository = countryRepository;
         }
 
         [HttpGet]
@@ -108,7 +109,7 @@ namespace PockeymonReviewApp.Controllers
                 StatusCode(500 , ModelState);
             }
 
-            return Ok(ownerMap);
+            return Ok("Successfully created");
         }
 
     }

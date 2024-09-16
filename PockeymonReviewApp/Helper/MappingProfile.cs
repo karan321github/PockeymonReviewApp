@@ -9,6 +9,7 @@ namespace PockeymonReviewApp.Helper
         public MappingProfile()
         {
                 CreateMap<Pockymon , PockeymonDto>();
+                CreateMap<PockeymonDto , Pockymon>();
                 CreateMap<Category , CategoryDto>();
                 CreateMap<CategoryDto , Category>();
                 CreateMap<Country , CountryDto>();

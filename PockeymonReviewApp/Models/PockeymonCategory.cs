@@ -6,5 +6,6 @@
         public int CategoryId { get; set; }
         public Pockymon Pockymon { get; set; }
         public Category Category { get; set; }
+        public int OwnerId { get; internal set; }
     }
 }

@@ -7,9 +7,34 @@ namespace PockeymonReviewApp.Repository
     public class PockeymonRepository : IPockeymonRepository
     {
         private readonly ApplicationDBContext _context;
-        public PockeymonRepository(ApplicationDBContext context) 
+        public PockeymonRepository(ApplicationDBContext context)
         {
             _context = context;
+        }
+
+        public bool CreatePockeymon(int ownerId, int categoryId, Pockymon pockeymon)
+        {   
+            var pockeymonOwnerEntity = _context.Owner.Where(o => o.Id == ownerId).FirstOrDefault();
+            var category = _context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
+
+            var pockeymonOwner = new PockeymonOwner()
+            {
+                Owner = pockeymonOwnerEntity ,
+                Pockymon = pockeymon ,
+            };
+            _context.Add(pockeymonOwner);
+
+            var pockeymoCategory = new PockeymonCategory()
+            {
+                Pockymon = pockeymon,
+                Category = category,
+                OwnerId = ownerId
+            };
+
+            _context.Add(pockeymoCategory);
+            _context.Add(pockeymon);
+
+            return save();
         }
 
         public ICollection<Pockymon> GetPockeymons()
@@ -29,8 +54,8 @@ namespace PockeymonReviewApp.Repository
 
         public decimal GetPockymonRateing(int pokeId)
         {
-            var reviews =  _context.Reviews.Where(p => p.Pockeymon.Id == pokeId);
-            if(reviews.Count() <= 0)
+            var reviews = _context.Reviews.Where(p => p.Pockeymon.Id == pokeId);
+            if (reviews.Count() <= 0)
             {
                 return 0;
             }
@@ -47,6 +72,12 @@ namespace PockeymonReviewApp.Repository
         {
             return _context.Pockeymon.Any(p => p.Id == pokeId);
 
+        }
+
+        public bool save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

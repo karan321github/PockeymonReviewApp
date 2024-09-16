@@ -9,6 +9,9 @@ namespace PockeymonReviewApp.Interfaces
         Pockymon GetPockymon(String Name);
         decimal GetPockymonRateing(int pokeId);
         bool PokemonExists(int pokeId);
+
+        bool CreatePockeymon(int ownerId , int categoryId , Pockymon pockeymon);
+        bool save();
         
     }
 }
