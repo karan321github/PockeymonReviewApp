@@ -7,19 +7,23 @@ using PockeymonReviewApp.Interfaces;
 
 namespace PockeymonReviewApp.Controllers
 {
-      [Route("api/[controller]")]
-      [ApiController]
+    [Route("api/[controller]")]
+    [ApiController]
     public class ReviewController : Controller
     {
         private readonly IReviewRepository _reviewRepository;
+        private readonly IPockeymonRepository _pockeymonRepository;
+        private readonly IReviewerRepository _reviewerRepository;
         private IMapper _mapper;
-        public ReviewController(IReviewRepository reviewRepository , IMapper mapper)
-        { 
+        public ReviewController(IReviewRepository reviewRepository, IReviewerRepository reviewerRepository, IPockeymonRepository pockeymonRepository, IMapper mapper)
+        {
             _reviewRepository = reviewRepository;
+            _pockeymonRepository = pockeymonRepository;
+            _reviewerRepository = reviewerRepository;
             _mapper = mapper;
         }
         [HttpGet]
-        [ProducesResponseType(200 , Type = typeof(IEnumerable<Review>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
 
         public IActionResult GetReviews()
         {
@@ -29,7 +33,7 @@ namespace PockeymonReviewApp.Controllers
             //    return BadRequest(ModelState);
             //}
 
-            return Ok(reviews);  
+            return Ok(reviews);
         }
         [HttpGet("{reviewId}")]
         [ProducesResponseType(200, Type = typeof(Review))]
@@ -39,11 +43,11 @@ namespace PockeymonReviewApp.Controllers
         {
             if (_reviewRepository.ReviewExists(id))
             {
-                return Ok(ModelState);  
+                return Ok(ModelState);
             }
             var review = _mapper.Map<ReviewDto>(_reviewRepository.GetReview(id));
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 BadRequest(ModelState);
             }
@@ -63,13 +67,47 @@ namespace PockeymonReviewApp.Controllers
 
             if (!ModelState.IsValid)
             {
-               return BadRequest(ModelState);
+                return BadRequest(ModelState);
             }
 
             return Ok(review);
         }
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
 
-            
+        public IActionResult CreateReview([FromQuery] int reviewerId, [FromQuery] int pokeId, ReviewDto reviewCreate)
+        {
+            if (reviewCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingReviwe = _reviewRepository.GetReviews()
+                .Where(r => r.Title.Trim().ToUpper() == reviewCreate.Title.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if(existingReviwe != null)
+            {
+               ModelState.AddModelError("", "Review already exist please review it in your own words");
+                return StatusCode(422 , ModelState);
+            }
+
+            if (!ModelState.IsValid) 
+                return BadRequest(ModelState);
+
+
+            var reviewMap = _mapper.Map<Review>(reviewCreate);
+            reviewMap.Pockeymon = _pockeymonRepository.GetPockymon(pokeId);
+            reviewMap.Reviewer = _reviewerRepository.GetReviewer(reviewerId);
+            if (!_reviewRepository.CreateReview(reviewMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
 
     }
 }

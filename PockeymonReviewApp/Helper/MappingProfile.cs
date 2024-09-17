@@ -8,17 +8,19 @@ namespace PockeymonReviewApp.Helper
     {
         public MappingProfile()
         {
-                CreateMap<Pockymon , PockeymonDto>();
-                CreateMap<PockeymonDto , Pockymon>();
-                CreateMap<Category , CategoryDto>();
-                CreateMap<CategoryDto , Category>();
-                CreateMap<Country , CountryDto>();
-                CreateMap<CountryDto, Country>();
-                CreateMap<OwnerDto, Owner>();
-                CreateMap<Owner, OwnerDto>();
-                CreateMap<ReviewDto, Review>();
-                CreateMap<ReviewerDto, Reviewer>();
+            CreateMap<Pockymon, PockeymonDto>();
+            CreateMap<Category, CategoryDto>();
+            CreateMap<CategoryDto, Category>();
+            CreateMap<CountryDto, Country>();
+            CreateMap<OwnerDto, Owner>();
+            CreateMap<PockeymonDto, Pockymon>();
+            CreateMap<ReviewDto, Review>();
+            CreateMap<ReviewerDto, Reviewer>();
+            CreateMap<Country, CountryDto>();
+            CreateMap<Owner, OwnerDto>();
+            CreateMap<Review, ReviewDto>();
+            CreateMap<Reviewer, ReviewerDto>();
 
         }
-    }
+    } 
 }
