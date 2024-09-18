@@ -12,6 +12,13 @@ namespace PockeymonReviewApp.Repository
         {
             _context = context;
         }
+
+        public bool CreateReviewer(Reviewer reviewer)
+        {
+            _context.Add(reviewer);
+            return save();
+        }
+
         public Reviewer GetReviewer(int reviewerId)
         {
             return _context.Reviewer.Where(r => r.Id == reviewerId)
@@ -34,6 +41,11 @@ namespace PockeymonReviewApp.Repository
             return _context.Reviews.Any(e => e.ReviewerId == reviewerId);
         }
 
-       
+
+        public bool save()
+        {
+          var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

@@ -63,6 +63,40 @@ namespace PockeymonReviewApp.Controllers
             return Ok(reviews);
         }
 
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
 
+        public IActionResult CreateReviewer([FromBody] ReviewerDto reviewerCreate)
+        {
+            if(reviewerCreate == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var isReviewerExist = _reviewerRepository
+                .GetReviewers()
+                .Where(r => r.FirstName.Trim().ToUpper() == reviewerCreate.FirstName.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if(isReviewerExist != null)
+            {
+                ModelState.AddModelError("", "Reviewer alredy exist");
+                return StatusCode(422, ModelState);
+            }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var reviewerMap = _mapper.Map<Reviewer>(reviewerCreate);
+
+            if (!_reviewerRepository.CreateReviewer(reviewerMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
+        
     }
 }

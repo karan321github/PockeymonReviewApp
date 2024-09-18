@@ -16,6 +16,7 @@ namespace PockeymonReviewApp.Helper
             CreateMap<PockeymonDto, Pockymon>();
             CreateMap<ReviewDto, Review>();
             CreateMap<ReviewerDto, Reviewer>();
+            CreateMap<Reviewer, ReviewerDto>();
             CreateMap<Country, CountryDto>();
             CreateMap<Owner, OwnerDto>();
             CreateMap<Review, ReviewDto>();

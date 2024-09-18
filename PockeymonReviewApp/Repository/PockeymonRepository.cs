@@ -31,7 +31,7 @@ namespace PockeymonReviewApp.Repository
                 OwnerId = ownerId
             };
 
-            _context.Add(pockeymoCategory);
+            //_context.Add(pockeymoCategory);
             _context.Add(pockeymon);
 
             return save();
