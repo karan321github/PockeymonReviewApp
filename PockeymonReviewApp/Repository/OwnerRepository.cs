@@ -21,6 +21,12 @@ namespace PockeymonReviewApp.Repository
             return save();
         }
 
+        public bool DeleteOwner(Owner owner)
+        {
+            _context.Remove(owner);
+            return save();
+        }
+
         public Owner GetOwner(int ownerId)
         {
             return _context.Owner.Where(e => e.Id == ownerId).FirstOrDefault();
@@ -55,6 +61,12 @@ namespace PockeymonReviewApp.Repository
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
+        }
+
+        public bool UpdateOwner(Owner owner)
+        {
+            _context.Update(owner);
+            return save();
         }
     }
 }

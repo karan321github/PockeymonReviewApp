@@ -53,5 +53,17 @@ namespace PockeymonReviewApp.Repository
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+        public bool UpdateCategory(Country country)
+        {
+            _context.Update(country);
+            return save();
+        }
+
+        public bool DeleteCountry(Country country)
+        {
+            _context.Remove(country);
+            return save();
+        }
     }
 }

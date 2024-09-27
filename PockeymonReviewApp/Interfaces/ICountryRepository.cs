@@ -12,6 +12,8 @@ namespace PockeymonReviewApp.Interfaces
         ICollection<Owner> GetOwnersFromCountry(int countryId);
         bool CountryExist(int countryId);
         public bool CreateCountry(Country country);
+        public bool UpdateCategory(Country country);
+        public bool DeleteCountry(Country country);
         bool save();
         
     }
